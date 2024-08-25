@@ -19,9 +19,9 @@ def add_contact(contact:Contact):
         number.focus_set()
         num.set(contact.name)
 
-def update_contact(contact:Contact):
+def update_contact(contact:Contact, index:int):
     global Contact_details_list, window
-    Contact_details_list[listbox.curselection()[0]] = contact
+    Contact_details_list[index] = contact
     listbox.delete(0, END)
     for i in Contact_details_list:
         listbox.insert(END, f"{i.name}   -   {i.phone_number}")
@@ -87,11 +87,11 @@ def Delete(i = None):
 
 def Update(i = None):
     global Contact_details_list, window
-    if not i:
-        try :    i = listbox.get(listbox.curselection()[0]).split('   -   ')[0]
-        except :
-            messagebox.showerror('ERROR','Select a contact to update!')
-            return
+
+    try :    i = listbox.get(listbox.curselection()[0]).split('   -   ')[0]
+    except :
+        messagebox.showerror('ERROR','Select a contact to update!')
+        return
  
     for j in Contact_details_list:
         if j.name == i:
@@ -120,7 +120,7 @@ def Update(i = None):
     address = Entry(window, width=36, font=('arial', 8, 'bold'), bootstyle='warning')
     address.grid(row=4, column=1, padx=2, pady=2)
     address.insert(0, Contact_details_list[i].address)
-    Button(window, text='Save Contact', style='outline-success', width=12, cursor='hand2', command=lambda:update_contact(Contact(a.get(), b.get(), mail.get(), address.get()))).grid(row=5, column=1, padx=2, pady=2, columnspan=2)
+    Button(window, text='Save Contact', style='outline-success', width=12, cursor='hand2', command=lambda:update_contact(Contact(a.get(), b.get(), mail.get(), address.get()), i) ).grid(row=5, column=1, padx=2, pady=2, columnspan=2)
     window.mainloop()
 
 
@@ -172,7 +172,7 @@ def Details(event):
     for i in Contact_details_list:
         if i.name == value:
             if messagebox.askyesnocancel('Details', f'Name: {i.name}\nPhone Number: {i.phone_number}\nEmail: {i.email}\nAddress: {i.address}\n\n ---WANT TO UPDATE THE CONTACT??') :
-                Update(i.name)
+                Update(i.name+'   -   ')
             break
 
 listbox = Listbox(frame1, width=33, height=13, justify='center', cursor='hand2')
@@ -202,7 +202,7 @@ f2.grid(row=3, column=0, columnspan=2, pady=1, padx=5, sticky='nswe')
 
 Button(f2, text='Delete Contact', style='outline-danger', width=14, command=lambda:Delete(), cursor='hand2').grid(row=0, column=0, padx=1)
 Button(f2, text='Update Contact', style='outline-info', width=14, command=lambda:Update(), cursor='hand2').grid(row=0, column=1, padx=1)
-Button(f2, text='Exit', style='warning', width=14, command=win.quit, cursor='hand2').grid(row=0, column=2, padx=1)
+Button(f2, text='Exit', style='warning', width=14, command=win.destroy, cursor='hand2').grid(row=0, column=2, padx=1)
 
 
 win.mainloop()
